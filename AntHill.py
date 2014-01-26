@@ -41,6 +41,7 @@ def fightStuff(name, delay, prob):
 	global fightsWon
 	global fightsLost
 	global lastOutput
+	global numFood
 	while True:
 		time.sleep(delay)
 		x = random.randint(0, 100)
@@ -62,40 +63,21 @@ def fightStuff(name, delay, prob):
 		else:
 			pass
 
-def drawScreen(name, delay):
+def youAllHateMe(name, delay):
 	global numWorkers
 	global numFighters
-	global totalAnts
-	global days
-	global cmd
-	global fightsWon
-	global fightsLost
+	global numFood
 	global lastOutput
-	if numFighters < 1:
-		print("Your hill was overrun and everyone died. Game Over")
-		sys.exit()
-	elif numFood < 1:
-		print("You ran out of food and everyone died. Game Over")
-		sys.exit()
-	else:
-		while True:
-			os.system(cmd)
-			print """
-
-			Last Output: %s
-
-			Workers: %s
-			Fighters: %s
-
-			Food: %s
-
-			fightsWon: %s
-			fightsLost: %s
-
-			Day: %s
-
-			""" % (lastOutput, numWorkers, numFighters, numFood, fightsWon, fightsLost, days)
-			time.sleep(delay)
+	while True:
+		time.sleep(delay)
+		x = random.randint(0, 100)
+		if x == 0:
+			lastOutput = "Everyone died except for a single good fighter. (You will die very soon...)"
+			numWorkers = 0
+			numFighters = 1
+			numFood = 5
+		else:
+			pass
 
 def starvation(name, delay):
 	global numFood
@@ -104,8 +86,8 @@ def starvation(name, delay):
 		time.sleep(delay)
 		s = random.randint(1,100)
 		if s <= 10:
-			print("Starvation occurs, food halfed.")
-			lastOutput = "Starvation Occurs, Food Halfed."
+#			print("Starvation occurs, food halfed.")
+			lastOutput = "Couldn't find enough food. Food Halfed."
 			numFood = numFood/2
 		else:
 			pass
@@ -140,12 +122,39 @@ elif _platform == "win32":
 try:
 	thread.start_new_thread(collectFood, ("collectFood",5))
 	thread.start_new_thread(fightStuff, ("fightStuff",6,40))
-	thread.start_new_thread(drawScreen, ("drawScreen",1))
+#	thread.start_new_thread(drawScreen, ("drawScreen",1))
 	thread.start_new_thread(newDay, ("newDay",15))
 	thread.start_new_thread(starvation, ("StarvationTest", 1))
 except Exception:
-	print Exception
 	sys.exit()
 
 while True:
-	pass
+	global numFood
+	global numFighters
+	if numFighters < 1:
+		print("Your hill was overrun and everyone died. Game Over")
+		lastOutput = "Your hill was overrun and everyone died. Game Over"
+		sys.exit()
+	elif numFood <= 1:
+		print("You ran out of food and everyone died. Game Over")
+		lastOutput = "You ran out of food and everyone died. Game Over"
+		sys.exit()
+	else:
+		while True:
+			os.system(cmd)
+			print """
+
+			Last Output: %s
+
+			Workers: %s
+			Fighters: %s
+
+			Food: %s
+
+			fightsWon: %s
+			fightsLost: %s
+
+			Day: %s
+
+			""" % (lastOutput, numWorkers, numFighters, numFood, fightsWon, fightsLost, days)
+			time.sleep(1)
